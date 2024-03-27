@@ -1,0 +1,34 @@
+version: '3.0'
+services:
+  subversion:
+    build:
+      context: ./subversion-build
+      dockerfile: Dockerfile
+    container_name: subversion
+    restart: always
+    ports:
+      - "80:80"
+      - "3690:3690"
+    volumes:
+      - apache2_conf:/usr/local/apache2/conf
+      - subversion_access:/etc/subversion
+      - svn_home:/home/svn
+volumes:
+  apache2_conf:
+    driver: local
+    driver_opts:
+      type: none
+      device: $PWD/volume/subversion/apache2_conf
+      o: bind
+  subversion_access:
+    driver: local
+    driver_opts:
+      type: none
+      device: $PWD/volume/subversion/subversion_access
+      o: bind
+  svn_home:
+    driver: local
+    driver_opts:
+      type: none
+      device: $PWD/volume/subversion/svn_home
+      o: bind
