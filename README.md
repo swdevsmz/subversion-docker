@@ -6,7 +6,7 @@
 ## 使い方
 1. Dockerビルドを行う
     ```bash
-    $ docker build -t subversion:latest .
+    $ docker build -t subversion:latest ./subversion-image
     ```
 2. docker-composeを使ってコンテナを立ち上げる
     ```bash

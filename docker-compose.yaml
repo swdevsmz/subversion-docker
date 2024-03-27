@@ -1,9 +1,7 @@
 version: '3.0'
 services:
   subversion:
-    build:
-      context: ./subversion-build
-      dockerfile: Dockerfile
+    image: subversion:latest
     container_name: subversion
     restart: always
     ports:
