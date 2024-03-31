@@ -37,6 +37,18 @@ RUN cp /usr/lib/apache2/modules/mod_dav.so /usr/local/apache2/modules/ &&\
 RUN echo 'Include conf/extra/svn.conf' >> /usr/local/apache2/conf/httpd.conf
 COPY svn.conf /usr/local/apache2/conf/extra/
 
+# SSL
+RUN sed -i -e 's,#LoadModule socache_shmcb_module modules/mod_socache_shmcb.so,LoadModule socache_shmcb_module modules/mod_socache_shmcb.so,g' /usr/local/apache2/conf/httpd.conf
+RUN sed -i -e 's,#LoadModule ssl_module modules/mod_ssl.so,LoadModule ssl_module modules/mod_ssl.so,g' /usr/local/apache2/conf/httpd.conf
+
+# ssl.confをhttpd.confから読み込めるようにする
+# RUN echo 'Include conf/extra/ssl.conf' >> /usr/local/apache2/conf/httpd.conf
+# COPY ssl.conf /usr/local/apache2/conf/extra/
+# COPY server.crt /usr/local/apache2/conf/
+# COPY server.csr /usr/local/apache2/conf/
+# COPY server.key /usr/local/apache2/conf/
+
+
 # 実行ユーザーを作成するため、このDockerfile内で有効な環境変数を設定
 ARG USERNAME=subversion
 ARG GROUPNAME=subversion

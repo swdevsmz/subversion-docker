@@ -31,3 +31,43 @@
 - 下記のファイルを編集する事でLDAPの設定を行う<br>
     `/usr/local/apache2/conf/extra/svn.conf`
 - `docker-compose.yaml`の中身を見ていただくと分かる通り、このファイルはホストOSにマウントされているのでホストOS側から直接編集してもよい# subversion-docker
+
+https://www.engilaboo.com/apache-docker-https/
+https://LAPTOP-GFO0OHTD
+
+自己証明書の作成
+秘密鍵を作成
+~~~
+openssl genrsa -aes128 2048 > server.key
+~~~
+
+~~~
+openssl req -new -key server.key > server.csr
+~~~
+Country Name -> JP
+Common name -> IPアドレス or FQDN形式のホスト名
+
+server.crt（サーバ証明書）の作成
+~~~
+openssl x509 -in server.csr -days 365 -req -signkey server.key > server.crt
+~~~
+
+パスワードの解除
+~~~
+mv server.key server.key.org
+openssl rsa -in server.key.org > server.key
+~~~
+
+HTTPS強制
+~~~
+RewriteEngine on
+RewriteCond %{HTTPS} off
+RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [R=301,L]
+~~~
+
+http.confのSSL関連モジュールの有効化
+~~~
+RUN sed -i -e 's,#LoadModule socache_shmcb_module modules/mod_socache_shmcb.so,LoadModule socache_shmcb_module modules/mod_socache_shmcb.so,g' /usr/local/apache2/conf/httpd.conf
+RUN sed -i -e 's,#LoadModule ssl_module modules/mod_ssl.so,LoadModule ssl_module modules/mod_ssl.so,g' /usr/local/apache2/conf/httpd.conf
+~~~
+
